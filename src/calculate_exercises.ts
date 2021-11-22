@@ -8,6 +8,39 @@ type ResultExercise = {
   average: number
 }
 
+interface ExerciseValues {
+  hoursPerDay: number[]
+  target: number
+}
+
+const parseExerciseArguments = (args: Array<String>): ExerciseValues => {
+  if (args.length < 4) throw new Error('not enough argugments')
+
+  //collect targets
+  let target = parseNumber(args[2])
+
+  //collect hour perday
+  let lengthOfTrainingDays = args.length - 3
+  let trainingDays = new Array(lengthOfTrainingDays)
+  for (let i = 3; i < args.length; i++) {
+    let value = parseNumber(args[i])
+    trainingDays[i - 3] = value
+  }
+  console.log(trainingDays)
+  return {
+    hoursPerDay: trainingDays,
+    target: target,
+  }
+}
+
+const parseNumber = (value: String): number => {
+  if (!isNaN(Number(value))) {
+    return Number(value)
+  } else {
+    throw new Error('Provided values were not numbers!')
+  }
+}
+
 const exerciseCalculator = (
   hoursPerDay: number[],
   target: number
@@ -64,7 +97,8 @@ const getRatingDescription = (rating: number): string => {
 }
 
 try {
-  let result = exerciseCalculator([3, 3, 2, 4.5, 3, 3, 1], 2)
+  let { hoursPerDay, target } = parseExerciseArguments(process.argv)
+  let result = exerciseCalculator(hoursPerDay, target)
   console.log(result)
 } catch (e: unknown) {
   let errMsg = 'something happened '

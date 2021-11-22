@@ -1,3 +1,22 @@
+interface BmiValues {
+  height: number
+  weight: number
+}
+
+const parseArguments = (args: Array<String>): BmiValues => {
+  if (args.length < 4) throw new Error('not enough argugments')
+  if (args.length > 4) throw new Error('too many arguments')
+
+  if (!isNaN(Number(args[2])) && !isNaN(Number(args[3]))) {
+    return {
+      height: Number(args[2]),
+      weight: Number(args[3]),
+    }
+  } else {
+    throw new Error('Provided values were not numbers!')
+  }
+}
+
 const calculateBmi = (height: number, weight: number): String => {
   let heightInMeter = height / 100
   let bmi = weight / (heightInMeter * heightInMeter)
@@ -20,4 +39,14 @@ const calculateBmi = (height: number, weight: number): String => {
   }
 }
 
-console.log(calculateBmi(180, 75))
+try {
+  const { height, weight } = parseArguments(process.argv)
+  const result = calculateBmi(height, weight)
+  console.log(result)
+} catch (e: unknown) {
+  let errorMessage = 'something error happened'
+  if (e instanceof Error) {
+    errorMessage += 'error' + e.message
+  }
+  console.log(errorMessage)
+}
